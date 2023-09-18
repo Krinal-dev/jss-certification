@@ -1,6 +1,6 @@
 // import { Field, withDatasourceCheck } from '@sitecore-jss/sitecore-jss-nextjs';
 import { Field, ImageField, LinkField, RichText, Text } from '@sitecore-jss/sitecore-jss-nextjs';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Cards from './Cards';
 
 // Ideally, all this is from generated Typescript code from Sitecore and we're not manually defining types.
@@ -58,10 +58,29 @@ export type PrimaryCardListWithTabsProps = {
 };
 
 const CardListWithTabs = ({ fields }: PrimaryCardListWithTabsProps): JSX.Element => {
-  const [activeTab, setActiveTab] = useState(fields?.tabList[0]?.id);
+  const [activeTab, setActiveTab] = useState(fields?.tabList[0]?.name);
+  const [filterdCards, setFilterCards] = useState(fields.cards);
+
+  useEffect(() => {
+    setCards();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
   // Fail out if fields aren't present
   if (fields === null || fields === undefined) return <></>;
+
+  const setCards = () => {
+    const filteredCardArr: cardList[] = [];
+
+    fields.cards.forEach((card) => {
+      card.fields.categories.forEach((category) => {
+        if (category.fields.category.value === activeTab) {
+          filteredCardArr.push(card);
+        }
+      });
+    });
+    setFilterCards(filteredCardArr);
+  };
 
   const handleTabClick = (tabId: string) => {
     setActiveTab(tabId);
@@ -72,9 +91,9 @@ const CardListWithTabs = ({ fields }: PrimaryCardListWithTabsProps): JSX.Element
       <button
         key={tab.id}
         className={`p-4 rounded-md m-4 hover:bg-[#296860] ${
-          activeTab === tab.id ? 'bg-[#244540]' : 'bg-[#71c7bb]'
+          activeTab === tab.name ? 'bg-[#244540]' : 'bg-[#71c7bb]'
         }`}
-        onClick={() => handleTabClick(tab.id)}
+        onClick={() => handleTabClick(tab.name)}
       >
         {tab?.displayName}
       </button>
@@ -87,7 +106,7 @@ const CardListWithTabs = ({ fields }: PrimaryCardListWithTabsProps): JSX.Element
         <div className="p-4 ">
           <div className="flex flex-row justify-center">{renderTabs()}</div>
           <div className="mt-4">
-            <Cards cards={fields.cards} />
+            <Cards cards={filterdCards} />
           </div>
         </div>
       );
@@ -96,7 +115,7 @@ const CardListWithTabs = ({ fields }: PrimaryCardListWithTabsProps): JSX.Element
         <div className="flex">
           <div className="flex flex-col">{renderTabs()}</div>
           <div className="mt-4">
-            <Cards cards={fields.cards} />
+            <Cards cards={filterdCards} />
           </div>
         </div>
       );

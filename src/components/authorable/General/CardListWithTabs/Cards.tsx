@@ -4,14 +4,9 @@ import { cardFields, cardList } from './CardListWithTabs';
 // Local
 
 const Cards = ({ cards }: cardFields): JSX.Element => {
-  // Fail out if fields aren't present
-  console.log('props:', cards);
-
   const sortedCardData = [...cards].sort(
     (a, b) => new Date(b.fields.date.value).getTime() - new Date(a.fields.date.value).getTime()
   );
-
-  console.log('sortedCardData:', sortedCardData);
 
   const formateDate = (date: string) => {
     const formatedDate = new Date(date).toLocaleDateString('en-us', {
@@ -43,7 +38,6 @@ const Cards = ({ cards }: cardFields): JSX.Element => {
 
               <div className="text-gray-700 mt-4">
                 <span> {formateDate(item?.fields?.date?.value)} </span>
-                {/* <span> {new Date(item.fields.date.value).toLocaleDateString()} </span> */}
               </div>
 
               <Text field={item.fields.title} tag="h1" className="text-2xl text-gray-700 mt-4" />
@@ -72,6 +66,4 @@ const Cards = ({ cards }: cardFields): JSX.Element => {
   );
 };
 
-// @todo: Figure out how to mock isPageEditing, or if it even matters, in Storybook.
-// export default withDatasourceCheck()<ContentBlockProps>(ContentBlock);
 export default Cards;
