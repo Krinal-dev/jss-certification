@@ -13,7 +13,9 @@ interface tabListFields {
     category: Field<string>;
   };
 }
-
+export type cardFields = {
+  cards: cardList[];
+};
 export interface cardList {
   id: string;
   url: string;

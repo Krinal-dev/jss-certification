@@ -1,19 +1,19 @@
 // import { Field, withDatasourceCheck } from '@sitecore-jss/sitecore-jss-nextjs';
 import { Link, NextImage, RichText, Text } from '@sitecore-jss/sitecore-jss-nextjs';
-import { cardList } from './CardListWithTabs';
+import { cardFields, cardList } from './CardListWithTabs';
 // Local
 
-const Cards = (props: any): JSX.Element => {
+const Cards = ({ cards }: cardFields): JSX.Element => {
   // Fail out if fields aren't present
-  console.log('props:', props);
+  console.log('props:', cards);
 
-  const sortedCardData = [...props.cards].sort(
+  const sortedCardData = [...cards].sort(
     (a, b) => new Date(b.fields.date.value).getTime() - new Date(a.fields.date.value).getTime()
   );
 
   console.log('sortedCardData:', sortedCardData);
 
-  const formateDate = (date: any) => {
+  const formateDate = (date: string) => {
     const formatedDate = new Date(date).toLocaleDateString('en-us', {
       day: 'numeric',
       month: 'numeric',
